@@ -368,6 +368,11 @@
 
     <style name="BrickContainer.UserVariables" />
 
+    <style name="BrickContainer.UserVariables.Collapsed">
+        <item name="android:minHeight">@dimen/brick_height_collapsed</item>
+        <item name="android:background">@drawable/collapsed_brick_background_data</item>
+    </style>
+
     <style name="BrickContainer.UserVariables.Small">
         <item name="android:minHeight">@dimen/brick_height_small</item>
         <item name="android:background">@drawable/brick_1h_red</item>

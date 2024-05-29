@@ -71,6 +71,11 @@ public abstract class UserVariableBrickWithVisualPlacement extends VisualPlaceme
 		this.userVariable = userVariable;
 	}
 
+	@Override
+	public BrickVisualizationType getVisualizationType() {
+		return BrickVisualizationType.DATA;
+	}
+
 	@IdRes
 	protected abstract int getSpinnerId();
 

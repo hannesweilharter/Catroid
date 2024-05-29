@@ -66,4 +66,9 @@ public class ChangeVariableBrick extends UserVariableBrickWithFormula {
 				.createChangeVariableAction(sprite, sequence,
 						getFormulaWithBrickField(BrickField.VARIABLE_CHANGE), userVariable));
 	}
+
+	@Override
+	public BrickVisualizationType getVisualizationType() {
+		return BrickVisualizationType.DATA;
+	}
 }

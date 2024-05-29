@@ -172,20 +172,22 @@ class BrickAdapter(private val sprite: Sprite) :
         return when(item.visualizationType) {
             BrickVisualizationType.EVENT ->
                 inflater.inflate(R.layout.collapsed_event_brick, null)
-            BrickVisualizationType.LOOKS ->
-                inflater.inflate(R.layout.collapsed_looks_brick, null)
-            BrickVisualizationType.MOTION ->
-                inflater.inflate(R.layout.collapsed_motion_brick, null)
             BrickVisualizationType.CONTROL ->
                 inflater.inflate(R.layout.collapsed_control_brick, null)
+            BrickVisualizationType.MOTION ->
+                inflater.inflate(R.layout.collapsed_motion_brick, null)
             BrickVisualizationType.SOUND ->
                 inflater.inflate(R.layout.collapsed_sound_brick, null)
+            BrickVisualizationType.LOOKS ->
+                inflater.inflate(R.layout.collapsed_looks_brick, null)
+            BrickVisualizationType.PEN ->
+                inflater.inflate(R.layout.collapsed_pen_brick, null)
+            BrickVisualizationType.DATA ->
+                inflater.inflate(R.layout.collapsed_data_brick, null)
             BrickVisualizationType.ARDUINO_RASPI_PHIRO ->
                 inflater.inflate(R.layout.collapsed_arduino_raspi_phiro_brick, null)
             BrickVisualizationType.LEGO ->
                 inflater.inflate(R.layout.collapsed_lego_brick, null)
-            BrickVisualizationType.PEN ->
-                inflater.inflate(R.layout.collapsed_pen_brick, null)
             BrickVisualizationType.USERDEFINED ->
                 inflater.inflate(R.layout.collapsed_userdefined_brick, null)
             else -> throw NullPointerException("No collapsed view found")

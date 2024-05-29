@@ -60,6 +60,11 @@ public abstract class UserVariableBrickWithFormula extends FormulaBrick implemen
 		this.userVariable = userVariable;
 	}
 
+	@Override
+	public BrickVisualizationType getVisualizationType() {
+		return BrickVisualizationType.DATA;
+	}
+
 	@IdRes
 	protected abstract int getSpinnerId();
 

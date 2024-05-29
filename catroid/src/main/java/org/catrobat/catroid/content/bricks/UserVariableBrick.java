@@ -61,6 +61,11 @@ public abstract class UserVariableBrick extends BrickBaseType implements UserVar
 	}
 
 	@Override
+	public BrickVisualizationType getVisualizationType() {
+		return BrickVisualizationType.DATA;
+	}
+
+	@Override
 	public Brick clone() throws CloneNotSupportedException {
 		UserVariableBrick clone = (UserVariableBrick) super.clone();
 		clone.spinner = null;

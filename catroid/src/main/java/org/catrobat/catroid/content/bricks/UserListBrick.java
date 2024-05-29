@@ -61,6 +61,11 @@ public abstract class UserListBrick extends FormulaBrick implements BrickSpinner
 	}
 
 	@Override
+	public BrickVisualizationType getVisualizationType() {
+		return BrickVisualizationType.DATA;
+	}
+
+	@Override
 	public Brick clone() throws CloneNotSupportedException {
 		UserListBrick clone = (UserListBrick) super.clone();
 		clone.spinner = null;
