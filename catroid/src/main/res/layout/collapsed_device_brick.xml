@@ -29,8 +29,8 @@
     android:orientation="horizontal">
 
     <org.catrobat.catroid.ui.BrickLayout
-        android:id="@+id/collapsed_data_brick"
-        style="@style/BrickContainer.UserVariables.Collapsed"
+        android:id="@+id/collapsed_device_brick"
+        style="@style/BrickContainer.Device.Collapsed"
         android:layout_marginTop="@dimen/brick_collapsed_margin_top"
         android:layout_marginBottom="@dimen/brick_collapsed_margin_bottom">
     </org.catrobat.catroid.ui.BrickLayout>

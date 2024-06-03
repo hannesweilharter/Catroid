@@ -184,6 +184,8 @@ class BrickAdapter(private val sprite: Sprite) :
                 inflater.inflate(R.layout.collapsed_pen_brick, null)
             BrickVisualizationType.DATA ->
                 inflater.inflate(R.layout.collapsed_data_brick, null)
+            BrickVisualizationType.DEVICE ->
+                inflater.inflate(R.layout.collapsed_device_brick, null)
             BrickVisualizationType.ARDUINO_RASPI_PHIRO ->
                 inflater.inflate(R.layout.collapsed_arduino_raspi_phiro_brick, null)
             BrickVisualizationType.LEGO ->
