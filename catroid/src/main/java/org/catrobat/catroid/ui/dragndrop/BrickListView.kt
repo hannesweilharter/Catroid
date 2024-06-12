@@ -102,6 +102,7 @@ class BrickListView : ListView {
 
     fun startMoving(brickToMove: Brick?) {
         cancelMove()
+        brickToMove?.setIsMoving(true)
         val flatList: MutableList<Brick> = ArrayList()
         brickToMove?.addToFlatList(flatList)
         if (brickToMove !== flatList[0]) {
@@ -130,6 +131,7 @@ class BrickListView : ListView {
 
     fun cancelMove() {
         brickAdapterInterface?.setAllPositionsVisible()
+        brickToMove?.setIsMoving(false)
         brickToMove = null
         hoveringDrawable = null
         motionEventId = -1

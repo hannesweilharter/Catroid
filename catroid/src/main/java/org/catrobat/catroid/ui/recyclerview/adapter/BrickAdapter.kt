@@ -62,6 +62,8 @@ class BrickAdapter(private val sprite: Sprite) :
     @CheckBoxMode
     private var checkBoxMode = NONE
 
+    private var collapseExpandOption = false
+
     private var scripts: MutableList<Script> = ArrayList()
     private var firstConnectedItem = -1
     private var lastConnectedItem = -1
@@ -108,6 +110,10 @@ class BrickAdapter(private val sprite: Sprite) :
         notifyDataSetChanged()
     }
 
+    fun setCollapseExpandOption(collapseExpandOption: Boolean) {
+        this.collapseExpandOption = collapseExpandOption
+    }
+
     fun updateItems(sprite: Sprite?) {
         sprite?.scriptList?.let { scripts = it }
         updateItemsFromCurrentScripts()
@@ -125,12 +131,15 @@ class BrickAdapter(private val sprite: Sprite) :
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val item = items[position]
-        val itemView = if (item.isCollapsed && checkBoxMode == NONE) {
+
+        // TODO Hannes: Undo delete of script -> collapsed value of event brick false
+
+        val itemView = if (item.isCollapsed && checkBoxMode == NONE && !item.isMoving) {
             if (item.visualizationType == BrickVisualizationType.EVENT) {
                 item.getView(parent.context)
-            }
-            else if (item is CompositeBrick && !item.parent.isCollapsed ||
-                item is EndBrick && !item.parent.parent.isCollapsed) {
+            } else if (item is CompositeBrick && !item.parent.isCollapsed ||
+                       item is EndBrick && !item.parent.parent.isCollapsed
+            ) {
                 item.getView(parent.context)
             } else {
                 getCollapsedItemView(item, parent)
@@ -150,9 +159,16 @@ class BrickAdapter(private val sprite: Sprite) :
             background.clearColorFilter()
         }
 
-        checkBoxClickListener(item, (itemView as ViewGroup), position)
-        item.checkBox.isChecked = selectionManager.isPositionSelected(position)
-        item.checkBox.isEnabled = viewStateManager.isEnabled(position)
+        if (checkBoxMode != NONE) {
+            checkBoxClickListener(item, (itemView as ViewGroup), position)
+            item.checkBox.isChecked = selectionManager.isPositionSelected(position)
+            item.checkBox.isEnabled = if (collapseExpandOption) {
+                viewStateManager.isEnabled(position) &&
+                    (item is CompositeBrick || item is EndBrick || item is ScriptBrick)
+            } else {
+                viewStateManager.isEnabled(position)
+            }
+        }
         return itemView
     }
 
@@ -367,6 +383,7 @@ class BrickAdapter(private val sprite: Sprite) :
     fun clearSelection() {
         selectionManager.clearSelection()
         viewStateManager.clearDisabledPositions()
+        collapseExpandOption = false
         clearConnectedItems()
         notifyDataSetChanged()
     }

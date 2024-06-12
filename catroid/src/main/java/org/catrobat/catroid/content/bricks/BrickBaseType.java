@@ -56,6 +56,8 @@ public abstract class BrickBaseType implements Brick {
 
 	protected boolean collapsed;
 
+	protected boolean isMoving = false;
+
 	protected UUID brickId = UUID.randomUUID();
 
 	@Override
@@ -79,6 +81,16 @@ public abstract class BrickBaseType implements Brick {
 	}
 
 	@Override
+	public boolean isMoving() {
+		return isMoving;
+	}
+
+	@Override
+	public void setIsMoving(boolean isMoving) {
+		this.isMoving = isMoving;
+	}
+
+	@Override
 	public BrickVisualizationType getVisualizationType() {
 		return BrickVisualizationType.MOTION;
 	}
@@ -87,11 +99,6 @@ public abstract class BrickBaseType implements Brick {
 	@Override
 	public CheckBox getCheckBox() {
 		return checkbox;
-	}
-
-	@Override
-	public void setCheckBox(CheckBox checkbox) {
-		this.checkbox = checkbox;
 	}
 
 	@Override

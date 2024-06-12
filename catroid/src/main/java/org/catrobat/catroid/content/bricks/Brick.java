@@ -181,8 +181,6 @@ public interface Brick extends Serializable, Cloneable {
 
 	CheckBox getCheckBox();
 
-	void setCheckBox(CheckBox checkBox);
-
 	void disableSpinners();
 
 	Brick clone() throws CloneNotSupportedException;
@@ -214,6 +212,10 @@ public interface Brick extends Serializable, Cloneable {
 	boolean isCollapsed();
 
 	void setCollapsed(boolean collapsed);
+
+	boolean isMoving();
+
+	void setIsMoving(boolean isMoving);
 
 	BrickVisualizationType getVisualizationType();
 

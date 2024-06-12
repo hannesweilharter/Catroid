@@ -214,7 +214,7 @@ public class ScriptFragment extends ListFragment implements
 			case COLLAPSE:
 				adapter.selectAllCollapsedBricks();
 				adapter.setCheckBoxMode(BrickAdapter.ALL);
-				List<Brick> selected = adapter.getSelectedItems();
+				adapter.setCollapseExpandOption(true);
 				mode.setTitle(getString(R.string.collapse_expand));
 				break;
 			case NONE:
@@ -234,12 +234,10 @@ public class ScriptFragment extends ListFragment implements
 
 	@Override
 	public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-		switch (item.getItemId()) {
-			case R.id.confirm:
-				handleContextualAction();
-				break;
-			default:
-				return false;
+		if (item.getItemId() == R.id.confirm) {
+			handleContextualAction();
+		} else {
+			return false;
 		}
 		return true;
 	}
@@ -765,9 +763,17 @@ public class ScriptFragment extends ListFragment implements
 			case R.string.brick_context_dialog_copy_brick:
 			case R.string.brick_context_dialog_copy_script:
 				try {
+					Boolean collapsed = brick.isCollapsed();
+					brick.setCollapsed(false);
+
 					Brick clonedBrick = brick.getAllParts().get(0).clone();
 					adapter.addItem(position, clonedBrick);
 					listView.startMoving(clonedBrick);
+
+					if (collapsed) {
+						brick.setCollapsed(true);
+						clonedBrick.setCollapsed(true);
+					}
 				} catch (CloneNotSupportedException e) {
 					ToastUtil.showError(getContext(), R.string.error_copying_brick);
 					Log.e(TAG, Log.getStackTraceString(e));
