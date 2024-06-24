@@ -45,6 +45,7 @@ public abstract class Script implements Serializable, Cloneable {
 
 	protected List<Brick> brickList = new ArrayList<>();
 	protected boolean commentedOut = false;
+	protected boolean isCollapsed = false;
 
 	@XStreamAsAttribute
 	protected float posX;
@@ -71,6 +72,7 @@ public abstract class Script implements Serializable, Cloneable {
 		}
 
 		clone.commentedOut = commentedOut;
+		clone.isCollapsed = isCollapsed;
 		clone.scriptBrick = null;
 		clone.posX = posX;
 		clone.posY = posY;
@@ -121,6 +123,14 @@ public abstract class Script implements Serializable, Cloneable {
 
 	public void setScriptBrick(ScriptBrick scriptBrick) {
 		this.scriptBrick = scriptBrick;
+	}
+
+	public boolean isCollapsed() {
+		return isCollapsed;
+	}
+
+	public void setCollapsed(boolean isCollapsed) {
+		this.isCollapsed = isCollapsed;
 	}
 
 	public void run(Sprite sprite, ScriptSequenceAction sequence) {

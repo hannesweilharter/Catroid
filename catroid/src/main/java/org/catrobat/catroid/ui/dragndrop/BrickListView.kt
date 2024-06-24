@@ -124,7 +124,7 @@ class BrickListView : ListView {
         }
     }
 
-    fun stopMoving() {
+    private fun stopMoving() {
         brickAdapterInterface?.moveItemTo(currentPositionOfHoveringBrick, brickToMove)
         cancelMove()
     }

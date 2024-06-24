@@ -53,7 +53,9 @@ public final class BrickController {
 			} else {
 				try {
 					if (!bricksToCopy.contains(brick.getParent())) {
-						script.addBrick(brick.clone());
+						Brick clone = brick.clone();
+						clone.setCollapsed(false);
+						script.addBrick(clone);
 					}
 				} catch (CloneNotSupportedException e) {
 					Log.e(TAG, Log.getStackTraceString(e));

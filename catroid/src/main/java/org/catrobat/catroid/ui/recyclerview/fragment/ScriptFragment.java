@@ -959,6 +959,9 @@ public class ScriptFragment extends ListFragment implements
 	private void collapseBricks(List<Brick> selectedBricks) {
 		for (Brick brick : adapter.getItems()) {
 			brick.setCollapsed(selectedBricks.contains(brick));
+			if (brick instanceof ScriptBrick) {
+				brick.getScript().setCollapsed(selectedBricks.contains(brick));
+			}
 		}
 		finishActionMode();
 	}

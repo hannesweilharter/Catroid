@@ -41,6 +41,7 @@ import org.catrobat.catroid.content.bricks.CompositeBrick
 import org.catrobat.catroid.content.bricks.EmptyEventBrick
 import org.catrobat.catroid.content.bricks.EndBrick
 import org.catrobat.catroid.content.bricks.FormulaBrick
+import org.catrobat.catroid.content.bricks.IfLogicBeginBrick.ElseBrick
 import org.catrobat.catroid.content.bricks.ListSelectorBrick
 import org.catrobat.catroid.content.bricks.ScriptBrick
 import org.catrobat.catroid.content.bricks.UserDefinedReceiverBrick
@@ -132,7 +133,13 @@ class BrickAdapter(private val sprite: Sprite) :
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val item = items[position]
 
-        // TODO Hannes: Undo delete of script -> collapsed value of event brick false
+        if (item is ScriptBrick && item.script.isCollapsed) {
+            item.isCollapsed = true
+        } else if (item is EndBrick || item is ElseBrick) {
+            if (item.parent.isCollapsed) {
+                item.isCollapsed = true
+            }
+        }
 
         val itemView = if (item.isCollapsed && checkBoxMode == NONE && !item.isMoving) {
             if (item.visualizationType == BrickVisualizationType.EVENT) {
@@ -252,9 +259,11 @@ class BrickAdapter(private val sprite: Sprite) :
     }
 
     override fun onItemClick(parent: AdapterView<*>?, view: View, position: Int, id: Long) {
-        if (checkBoxMode == NONE) {
-            val item = items[position]
-            onItemClickListener?.onBrickClick(item, position)
+        val item = items[position]
+        if (checkBoxMode == NONE &&
+            (!item.isCollapsed || (item.isCollapsed && !item.parent.isCollapsed))
+        ) {
+            onItemClickListener?.onBrickClick(items[position], position)
         }
     }
 
@@ -264,9 +273,11 @@ class BrickAdapter(private val sprite: Sprite) :
         position: Int,
         id: Long
     ): Boolean {
-        if (checkBoxMode == NONE) {
-            val item = items[position]
-            onItemClickListener?.onBrickLongClick(item, position)
+        val item = items[position]
+        if (checkBoxMode == NONE &&
+            (!item.isCollapsed || (item.isCollapsed && !item.parent.isCollapsed))
+        ) {
+            onItemClickListener?.onBrickLongClick(items[position], position)
             return true
         }
         return false
@@ -457,8 +468,18 @@ class BrickAdapter(private val sprite: Sprite) :
             for (script in scripts) {
                 script.removeBrick(itemToMove)
             }
-            val destinationPosition = brickAboveTargetPosition.positionInDragAndDropTargetList + 1
-            val destinationList = brickAboveTargetPosition.dragAndDropTargetList
+
+            var destinationPosition = brickAboveTargetPosition.positionInDragAndDropTargetList + 1
+            var destinationList = brickAboveTargetPosition.dragAndDropTargetList
+
+            if (brickAboveTargetPosition.isCollapsed && brickAboveTargetPosition.parent.isCollapsed) {
+                val collapsedParent = getCollapsedParent(position - 1)
+                destinationPosition = collapsedParent.nestedBricks.size
+                destinationList = collapsedParent.dragAndDropTargetList
+                itemToMove?.isCollapsed = true
+            } else if (itemToMove?.parent?.isCollapsed == true && itemToMove !is CompositeBrick) {
+                itemToMove.isCollapsed = false
+            }
 
             if (destinationPosition < destinationList.size) {
                 destinationList.add(destinationPosition, itemToMove)
@@ -467,6 +488,11 @@ class BrickAdapter(private val sprite: Sprite) :
             }
         }
         updateItemsFromCurrentScripts()
+    }
+
+    private fun getCollapsedParent(position: Int): CompositeBrick {
+        val item = items[position]
+        return if (item !is CompositeBrick) item.parent as CompositeBrick else item // TODO Hannes this often raises an error
     }
 
     private fun moveScript(itemToMove: ScriptBrick, brickAboveTargetPosition: Brick) {
