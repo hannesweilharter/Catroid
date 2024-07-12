@@ -259,10 +259,7 @@ class BrickAdapter(private val sprite: Sprite) :
     }
 
     override fun onItemClick(parent: AdapterView<*>?, view: View, position: Int, id: Long) {
-        val item = items[position]
-        if (checkBoxMode == NONE &&
-            (!item.isCollapsed || (item.isCollapsed && !item.parent.isCollapsed))
-        ) {
+        if (checkBoxMode == NONE) {
             onItemClickListener?.onBrickClick(items[position], position)
         }
     }
@@ -273,10 +270,7 @@ class BrickAdapter(private val sprite: Sprite) :
         position: Int,
         id: Long
     ): Boolean {
-        val item = items[position]
-        if (checkBoxMode == NONE &&
-            (!item.isCollapsed || (item.isCollapsed && !item.parent.isCollapsed))
-        ) {
+        if (checkBoxMode == NONE) {
             onItemClickListener?.onBrickLongClick(items[position], position)
             return true
         }
@@ -459,40 +453,43 @@ class BrickAdapter(private val sprite: Sprite) :
         return true
     }
 
-    override fun moveItemTo(position: Int, itemToMove: Brick?) {
+    override fun moveItemTo(position: Int, brickToMove: Brick?) {
         val brickAboveTargetPosition = getBrickAbovePosition(position)
+        val brickBelowTargetPosition = getBrickBelowPosition(position) // TODO
 
-        if (itemToMove is ScriptBrick) {
-            moveScript(itemToMove, brickAboveTargetPosition)
+        if (brickToMove is ScriptBrick) {
+            moveScript(brickToMove, brickAboveTargetPosition)
         } else {
             for (script in scripts) {
-                script.removeBrick(itemToMove)
+                script.removeBrick(brickToMove)
             }
 
             var destinationPosition = brickAboveTargetPosition.positionInDragAndDropTargetList + 1
             var destinationList = brickAboveTargetPosition.dragAndDropTargetList
 
-            if (brickAboveTargetPosition.isCollapsed && brickAboveTargetPosition.parent.isCollapsed) {
+            if (brickBelowTargetPosition != null && brickAboveTargetPosition.isCollapsed &&
+                brickBelowTargetPosition.isCollapsed
+            ) {
                 val collapsedParent = getCollapsedParent(position - 1)
-                destinationPosition = collapsedParent.nestedBricks.size
+                destinationPosition = (collapsedParent as CompositeBrick).nestedBricks.size
                 destinationList = collapsedParent.dragAndDropTargetList
-                itemToMove?.isCollapsed = true
-            } else if (itemToMove?.parent?.isCollapsed == true && itemToMove !is CompositeBrick) {
-                itemToMove.isCollapsed = false
+                brickToMove?.isCollapsed = true
+            } else if (brickToMove !is CompositeBrick) {
+                brickToMove?.isCollapsed = false
             }
 
             if (destinationPosition < destinationList.size) {
-                destinationList.add(destinationPosition, itemToMove)
+                destinationList.add(destinationPosition, brickToMove)
             } else {
-                destinationList.add(itemToMove)
+                destinationList.add(brickToMove)
             }
         }
         updateItemsFromCurrentScripts()
     }
 
-    private fun getCollapsedParent(position: Int): CompositeBrick {
+    private fun getCollapsedParent(position: Int): Brick {
         val item = items[position]
-        return if (item !is CompositeBrick) item.parent as CompositeBrick else item // TODO Hannes this often raises an error
+        return if (item !is CompositeBrick) item.parent else item // TODO Hannes this often raises an error
     }
 
     private fun moveScript(itemToMove: ScriptBrick, brickAboveTargetPosition: Brick) {
@@ -532,6 +529,13 @@ class BrickAdapter(private val sprite: Sprite) :
             position--
         }
         return items[position]
+    }
+
+    private fun getBrickBelowPosition(position: Int): Brick? {
+        if (position + 1 >= items.size) {
+            return null
+        }
+        return items[position + 1]
     }
 
     override fun getCount(): Int = items.size
